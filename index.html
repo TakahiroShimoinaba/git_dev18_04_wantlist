@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Chatアプリ</title>
+  <style>
+    /* この中にcssをかけます */
+  </style>
+
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+  <!-- ブラウザの画面に見える内容 -->
+
+<p class="title">冬チャリ準備</p>
+
+<div class="wrapper">
+  <div class="item">
+    <!-- 名前 -->
+    欲しいもの　　　　
+    <input type="text" id="item">
+  </div>
+
+  <!-- テキストエリア１ -->
+<div class="reason">
+
+  <!-- 値段 -->
+  お値段　　　　　　
+  <input type="text" id="price"  maxlength="20" placeholder="数値を入力" >
+</div>
+ 
+
+  <div class="reason">
+    <!-- テキストエリア２ -->
+    欲しい理由
+  </div>
+
+  <div>
+    <textarea name="" id="text" cols="30" rows="10"></textarea>
+  </div>
+     
+
+<!-- 画像選択ボタン　取り止め
+<input type="file" id="imgselect" multiple> -->
+
+<div class="btn">
+  <!-- 送信ボタン -->
+  <button id="send">送信</button>
+</div>
+
+
+<div class="total">
+  <!-- 保存されたデータが表示される箇所 -->
+  <div id="total"></div>
+</div>　　　　
+
+
+<div class="btn">
+  <!-- 削除ボタン -->
+  <button id="delete">削除</button>
+</div>
+
+
+<!-- 画像サムネイル表示
+<div id="preview"></div> -->
+
+  <div class="output">
+    <!-- 保存されたデータが表示される箇所 -->
+    <div id="output"></div>
+  </div>　　　　
+
+  <!--/ ブラウザの画面に見える内容 -->
+
+</div>
+
+  <!-- JQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <!--** 以下Firebase **-->
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <!-- ここにfirebaseのscriptを貼り付ける -->
+  <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyBueibCasGL-yYUEQdjYjVlGhq0--DHs04",
+      authDomain: "dev18-chat01-202d0.firebaseapp.com",
+      databaseURL: "https://dev18-chat01-202d0.firebaseio.com",
+      projectId: "dev18-chat01-202d0",
+      storageBucket: "dev18-chat01-202d0.appspot.com",
+      messagingSenderId: "212306036436",
+      appId: "1:212306036436:web:e97940d812d57673c75d41"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    //firebaseのデーターベース（保存させる場所）を使いますよと言うjsのコードを貼り付ける
+    const newPostRef = firebase.database().ref();
+
+
+$("#text").on("keydown", function(e){
+
+if(e.keyCode==13){
+
+  newPostRef.push({
+
+    item: $("#item").val(),
+    text: $("#text").val(),
+    price: $("#price").val()
+
+  });
+
+  $("#item").val("");
+  $("#text").val("");
+  $("#price").val("");
+
+  }
+
+
+});
+
+// データ受信
+
+newPostRef.on("child_added", function(data){
+
+  let v = data.val();
+  let k = data.key;
+  // key　＝　firebase上のユニークキーの取得をしている
+
+console.log(v);
+console.log(k);
+
+// 削除ボタンと連携させたいが分からず。未実装。
+
+let str = `
+          <div class="output">
+          <input type="radio" name="item" value="item" class="itemborder">欲しいもの　　${v.item} 
+            <br>
+          <input type="radio" name="price"  class="totalprice" value=${v.price}>お値段　　　　${v.price}
+            <br>
+          <input type="radio" name="reason" value="reason">欲しい理由　　${v.text}<br>
+          </div>
+          `;
+
+$("#output").prepend(str);
+
+
+// 個別送信の価格情報のみ取得はできる。
+
+let price = v.price;
+console.log(price);
+
+
+// お値段を配列化
+var items=[];
+
+      $(".totalprice").each(function(){
+        items.push($(this).val());
+      });
+
+      console.log(items);
+
+// お値段を合計
+
+const total = Object.keys(items) // Get keys
+       .map( key => +items[key] ) // Get values as numbers
+       .reduce ( (a,b) => a+b ); // sum up
+
+console.log(total);
+
+let show = `
+          <div>
+            <p>合計金額</p>
+            <p class="showprice">${total}円</p>
+          </div>
+            `;
+
+$("#total").html(show);
+
+});
+
+
+
+// 画像挿入　input要素
+
+// // <input>でファイルが選択されたときの処理
+// const fileInput = document.getElementById('imgselect');
+// const handleFileSelect = () => {
+//   const files = fileInput.files;
+//   for (let i = 0; i < files.length; i++) {
+//     previewFile(files[i]);
+//   }
+// }
+// // ファイル選択時にhandleFileSelectを発火
+// fileInput.addEventListener('change', handleFileSelect);
+
+
+
+// // 画像サムネイル
+// function previewFile(file) {
+//   // プレビュー画像を追加する要素
+//   const preview = document.getElementById('preview');
+
+//   // FileReaderオブジェクトを作成
+//   const reader = new FileReader();
+
+//   // ファイルが読み込まれたときに実行する
+//   reader.onload = function (e) {
+//     const imageUrl = e.target.result; // 画像のURLはevent.target.resultで呼び出せる
+//     const img = document.createElement("img"); // img要素を作成
+//     img.src = imageUrl; // 画像のURLをimg要素にセット
+//     preview.appendChild(img); // #previewの中に追加
+//   }
+
+//   // いざファイルを読み込む
+//   reader.readAsDataURL(file);
+// }
+
+
+
+
+
+
+
+  </script>
+</body>
+
+</html>

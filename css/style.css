@@ -1,0 +1,61 @@
+/* ここから下に記載していく */
+
+.title {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  font-size: 30px;
+  margin-top: 30px;
+  padding-bottom: 30px;
+}
+
+.wrapper {
+  margin-left: 600px;
+}
+
+.item {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.reason {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+#text {
+  margin-left: 150px;
+}
+
+#send {
+  margin-left: 150px;
+}
+
+.btn {
+  margin-bottom: 20px;
+}
+
+#delete {
+  margin-left: 150px;
+}
+
+.output {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.itemborder {
+  border: solid;
+}
+
+.total {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.showprice {
+  color: crimson;
+  margin-left: 150px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
